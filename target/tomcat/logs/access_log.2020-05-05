@@ -1,0 +1,17 @@
+127.0.0.1 - - [05/May/2020:16:09:47 -0500] "GET /java/spark/hello HTTP/1.1" 404 - http-bio-8080-exec-1 0
+0:0:0:0:0:0:0:1 - - [05/May/2020:16:09:57 -0500] "GET / HTTP/1.1" 404 - http-bio-8080-exec-3 0
+0:0:0:0:0:0:0:1 - - [05/May/2020:16:10:04 -0500] "GET /java HTTP/1.1" 404 - http-bio-8080-exec-4 0
+0:0:0:0:0:0:0:1 - - [05/May/2020:16:10:10 -0500] "GET /java/spark/hello HTTP/1.1" 404 - http-bio-8080-exec-5 0
+0:0:0:0:0:0:0:1 - - [05/May/2020:16:10:32 -0500] "GET /java/spark/hello HTTP/1.1" 404 - http-bio-8080-exec-6 0
+0:0:0:0:0:0:0:1 - - [05/May/2020:16:10:34 -0500] "GET /java/spark/hello HTTP/1.1" 404 - http-bio-8080-exec-7 0
+0:0:0:0:0:0:0:1 - - [05/May/2020:16:10:34 -0500] "GET /java/spark/hello HTTP/1.1" 404 - http-bio-8080-exec-8 0
+0:0:0:0:0:0:0:1 - - [05/May/2020:16:10:34 -0500] "GET /java/spark/hello HTTP/1.1" 404 - http-bio-8080-exec-9 0
+0:0:0:0:0:0:0:1 - - [05/May/2020:16:10:34 -0500] "GET /java/spark/hello HTTP/1.1" 404 - http-bio-8080-exec-10 0
+0:0:0:0:0:0:0:1 - - [05/May/2020:16:10:35 -0500] "GET /java/spark/hello HTTP/1.1" 404 - http-bio-8080-exec-10 0
+0:0:0:0:0:0:0:1 - - [05/May/2020:16:45:38 -0500] "GET /Project-1 HTTP/1.1" 302 - http-bio-8080-exec-1 0
+0:0:0:0:0:0:0:1 - - [05/May/2020:16:45:38 -0500] "GET /Project-1/ HTTP/1.1" 404 971 http-bio-8080-exec-2 8
+0:0:0:0:0:0:0:1 - - [05/May/2020:16:45:48 -0500] "GET /Project-1/hello HTTP/1.1" 200 13 http-bio-8080-exec-3 6200
+0:0:0:0:0:0:0:1 - - [05/May/2020:17:05:33 -0500] "GET /Project-1/hello HTTP/1.1" 200 13 http-bio-8080-exec-1 6180
+0:0:0:0:0:0:0:1 - - [05/May/2020:19:06:02 -0500] "GET /contentDocumentStart.js HTTP/1.1" 404 - http-bio-8080-exec-3 0
+0:0:0:0:0:0:0:1 - - [05/May/2020:20:05:18 -0500] "GET /contentDocumentStart.js HTTP/1.1" 404 - http-bio-8080-exec-5 0
+0:0:0:0:0:0:0:1 - - [05/May/2020:20:06:24 -0500] "GET /contentDocumentStart.js HTTP/1.1" 404 - http-bio-8080-exec-7 0
