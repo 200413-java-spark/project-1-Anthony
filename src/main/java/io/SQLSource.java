@@ -16,6 +16,6 @@ public class SQLSource {
         url = System.getProperty("database.url", "jdbc:postgresql://18.221.92.236:5432/mydb");
         user = System.getProperty("database.username", "mydb");
         password = System.getProperty("database.password", "mydb");
-        return DriverManager.getConnection(url,user,password);
+        return DriverManager.getConnection(url, user, password);
     }
 }
