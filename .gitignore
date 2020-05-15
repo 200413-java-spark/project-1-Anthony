@@ -1,7 +1,4 @@
-./target
 src/main/resources/TestData.csv
-resources/TestData.csv
-resources
 target
 src/main/resources/BlightHCData.csv
 .vscode
