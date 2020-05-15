@@ -1,3 +1,5 @@
 ./target
 src/resources/TestData.csv
 resources/TestData.csv
+target
+.vscode
