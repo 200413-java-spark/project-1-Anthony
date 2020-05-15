@@ -35,10 +35,12 @@ public class Server {
             JavaRDD<UniqueItem> itemList = new parseCSVFile().createItemRDD(sparkContext);
             System.out.println("itemlist: " + itemList.count());
             // List<UniqueItem> arrayList = parseCSVFile.createListFromRDD(itemList);
-            itemList.foreach(f -> {
-                System.out.println(f.getName());
-            });
-
+            // itemList.foreach(f -> {
+            // System.out.println(f.getName());
+            // SQLIo.insertSQL(f);
+            // });
+            List<UniqueItem> listItems = itemList.collect();
+            SQLIo.insertSQL(listItems);
             sparkContext.close();
             // execTomcat();
 
