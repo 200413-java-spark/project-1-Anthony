@@ -111,9 +111,11 @@ public class SQLIo {
         rawDStatement.setString(1, items.get(i)._1);
         rawDStatement.setDouble(2, items.get(i)._2._1);
         rawDStatement.setDouble(3, items.get(i)._2._2);
-        rawDStatement.setDouble(4, items.get(i)._2._2 - items.get(i)._2._1);
-        rawDStatement.setDouble(5, Math.abs((items.get(i)._2._2 - items.get(i)._2._1)) / (items.get(i)._2._1));
-        rawDStatement.setDouble(6, Math.abs((items.get(i)._2._2 - items.get(i)._2._1)) / (items.get(i)._2._2));
+        rawDStatement.setDouble(4, round.round((items.get(i)._2._2 - items.get(i)._2._1), 2));
+        rawDStatement.setDouble(5,
+            round.round((Math.abs((items.get(i)._2._2 - items.get(i)._2._1)) / (items.get(i)._2._1)) * 100, 2));
+        rawDStatement.setDouble(6,
+            round.round((Math.abs((items.get(i)._2._2 - items.get(i)._2._1)) / (items.get(i)._2._2)) * 100, 2));
 
         rawDStatement.addBatch();
       }
@@ -173,6 +175,9 @@ public class SQLIo {
   public static ArrayList<String> readSQL(String name) throws SQLException {
     ArrayList<String> output = new ArrayList<String>();
     String query = "select * from " + "sparkTableDiff where name='" + name + "'";
+    String querySC = "select * from " + "sparkTable where name='" + name + "'";
+    String queryHC = "select * from " + "sparkTableHC where name='" + name + "'";
+
     try (Connection conn = SQLSource.getConnection();
 
     ) {
@@ -185,6 +190,20 @@ public class SQLIo {
                 + Double.toString(resultStatement.getDouble("diff")) + " | "
                 + Double.toString(resultStatement.getDouble("percentDiffSC")) + " | "
                 + Double.toString(resultStatement.getDouble("percentDiffHC")) + " | ");
+      }
+      ResultSet resultStatementSC = statement.executeQuery(querySC);
+      output.add("###SC DATA###");
+      while (resultStatementSC.next()) {
+        output.add(
+            " | " + resultStatementSC.getString("name") + " | " + Double.toString(resultStatementSC.getDouble("value"))
+                + " | " + resultStatementSC.getDate("date").toString() + " | ");
+      }
+      ResultSet resultStatementHC = statement.executeQuery(queryHC);
+      output.add("###HC DATA###");
+      while (resultStatementHC.next()) {
+        output.add(
+            " | " + resultStatementHC.getString("name") + " | " + Double.toString(resultStatementHC.getDouble("value"))
+                + " | " + resultStatementHC.getDate("date").toString() + " | ");
       }
     }
     return output;
