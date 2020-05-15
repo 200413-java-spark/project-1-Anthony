@@ -1,6 +1,8 @@
 io\SQLSource.class
 servlet\testServlet.class
 items\Item.class
+io\SQLIo.class
 Server.class
 items\UniqueItem.class
+io\parseCSVFile.class
 spark\sparkOperations.class

@@ -37,7 +37,6 @@ public class Server {
             // List<UniqueItem> arrayList = parseCSVFile.createListFromRDD(itemList);
             itemList.foreach(f -> {
                 System.out.println(f.getName());
-                SQLIo.insertSQL(f);
             });
 
             sparkContext.close();
