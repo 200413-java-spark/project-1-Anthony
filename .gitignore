@@ -5,3 +5,4 @@ resources
 target
 src/main/resources
 .vscode
+.classpath
