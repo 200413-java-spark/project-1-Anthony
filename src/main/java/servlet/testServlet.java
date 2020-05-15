@@ -1,6 +1,8 @@
 package servlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -8,6 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
+
+import io.SQLIo;
+import io.SQLSource;
 
 public class testServlet extends HttpServlet {
 
@@ -24,17 +29,39 @@ public class testServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     resp.getWriter().println("Hello World");
-
   }
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    // JavaRDD<String> namesRDD = sparkContext.parallelize(names);
-    // JavaPairRDD<String, Integer> namesMapper = namesRDD.mapToPair((f) -> new
-    // Tuple2<>(f, 1));
-    // System.out.println(namesMapper.collect());
-    // JavaPairRDD<String, Integer> countNames = namesMapper.reduceByKey((x, y) ->
-    // (x + (int) y));
-    // resp.getWriter().println(countNames.collect());
+    String[] request = req.getParameterValues("table")[0].split(",");
+    PrintWriter output = resp.getWriter();
+
+    output.print("<h1>Anthony's Project </h1><br>");
+    // output.print(request[0] + request[1]);
+    // SQLIo sqlCommands = new SQLIo();
+    if (request[0].equals("sparkTableDiff")) {
+      try {
+
+        String[] list = SQLIo.readSQL(request[0], request[1], true).toString().split(",");
+        for (int i = 0; i < list.length; i++) {
+          output.println(list[i]);
+          output.println("<br>");
+        }
+      } catch (SQLException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    } else {
+      try {
+        String[] list = SQLIo.readSQL(request[0], request[1]).toString().split(",");
+        for (int i = 0; i < list.length; i++) {
+          output.println(list[i]);
+          output.println("<br>");
+        }
+      } catch (SQLException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
   }
 }

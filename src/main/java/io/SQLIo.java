@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -90,5 +91,80 @@ public class SQLIo {
         System.out.println(rs.getString("name"));
       }
     }
+  }
+
+  public static void insertDiff(List<Tuple2<String, Tuple2<Double, Double>>> items) throws SQLException {
+    String tableName = "sparkTableDiff";
+    try (Connection conn = SQLSource.getConnection();
+
+    ) {
+      Statement statement = conn.createStatement();
+      conn.setAutoCommit(false);
+
+      statement.execute("DROP TABLE IF EXISTS " + tableName + " CASCADE");
+      statement.execute("CREATE TABLE " + tableName
+          + " (id serial primary key, name varchar, scPrice decimal, hcPrice decimal, diff decimal, percentDiff decimal)");
+      PreparedStatement rawDStatement = conn.prepareStatement(
+          "INSERT INTO " + tableName + " (name, scPrice, hcPrice, diff, percentDiff) VALUES(?,?,?,?,?)");
+      for (int i = 0; i < items.size(); i++) {
+        // Date newDate = Date.valueOf(items.get(i).getDate());
+        rawDStatement.setString(1, items.get(i)._1);
+        rawDStatement.setDouble(2, items.get(i)._2._1);
+        rawDStatement.setDouble(3, items.get(i)._2._2);
+        rawDStatement.setDouble(4, Math.abs(items.get(i)._2._2 - items.get(i)._2._1));
+        rawDStatement.setDouble(5,
+            Math.abs((items.get(i)._2._2 - items.get(i)._2._1)) / (Math.max(items.get(i)._2._2, items.get(i)._2._1)));
+        rawDStatement.addBatch();
+      }
+      try {
+        rawDStatement.executeBatch();
+      } catch (SQLException e) {
+        System.out.println("Error message: " + e.getMessage());
+        return;
+      }
+
+      conn.commit();
+
+      ResultSet rs = null;
+      rs = statement.executeQuery("SELECT * FROM " + tableName + " ORDER BY id DESC LIMIT 20");
+      while (rs.next()) {
+        System.out.println(rs.getString("name"));
+      }
+    }
+  }
+
+  public static ArrayList<String> readSQL(String table, String direction) throws SQLException {
+    ArrayList<String> output = new ArrayList<String>();
+    String query = "select * from " + table + " order by value " + direction + " limit 40";
+    try (Connection conn = SQLSource.getConnection();
+
+    ) {
+      Statement statement = conn.createStatement();
+      ResultSet resultStatement = statement.executeQuery(query);
+      while (resultStatement.next()) {
+        output.add(" | " + resultStatement.getString("name") + " | "
+            + Double.toString(resultStatement.getDouble("value")) + " | ");
+      }
+    }
+    return output;
+  }
+
+  public static ArrayList<String> readSQL(String table, String col, Boolean diff) throws SQLException {
+    ArrayList<String> output = new ArrayList<String>();
+    String query = "select * from " + table + " order by " + col + " desc limit 40";
+    try (Connection conn = SQLSource.getConnection();
+
+    ) {
+      Statement statement = conn.createStatement();
+      ResultSet resultStatement = statement.executeQuery(query);
+      while (resultStatement.next()) {
+        output.add(
+            " | " + resultStatement.getString("name") + " | " + Double.toString(resultStatement.getDouble("scPrice"))
+                + " | " + Double.toString(resultStatement.getDouble("hcPrice")) + " | "
+                + Double.toString(resultStatement.getDouble("diff")) + " | "
+                + Double.toString(resultStatement.getDouble("percentDiff")) + " | ");
+      }
+    }
+    return output;
   }
 }

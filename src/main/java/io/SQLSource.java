@@ -13,6 +13,11 @@ public class SQLSource {
     }
 
     public static Connection getConnection() throws SQLException {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (java.lang.ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
         url = System.getProperty("database.url", "jdbc:postgresql://18.221.92.236:5432/mydb");
         user = System.getProperty("database.username", "mydb");
         password = System.getProperty("database.password", "mydb");

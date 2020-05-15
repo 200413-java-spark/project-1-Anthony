@@ -9,6 +9,7 @@ import io.parseCSVFile;
 import io.netty.util.internal.SystemPropertyUtil;
 import items.UniqueItem;
 import scala.Tuple2;
+import scala.Tuple3;
 import servlet.testServlet;
 import spark.sparkOperations;
 
@@ -24,16 +25,17 @@ import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
 
 public class Server {
-    private static void execTomcat() {
+    private static void execTomcat() throws LifecycleException {
         Tomcat tomcat = new Tomcat();
         tomcat.setBaseDir(new File("target/tomcat/").getAbsolutePath());
         tomcat.setPort(8080);
         tomcat.getConnector();
         tomcat.addWebapp("/spark", new File("src/main/resources/").getAbsolutePath());
         tomcat.addServlet("/spark", "testServlet", new testServlet()).addMapping("/testServlet");
+        tomcat.start();
     }
 
-    public static void main(String args[]) throws SQLException {
+    public static void main(String args[]) throws SQLException, LifecycleException {
         // System.out.println("args: " + args[0]);
         if (args[0].equals("load")) {
             SparkConf conf = new SparkConf().setMaster("local").setAppName("Project 1 Anthony");
@@ -48,21 +50,23 @@ public class Server {
             List<Tuple2<String, Double>> list = SparkOperations.getDataSparked(itemList);
             List<Tuple2<String, Double>> listHC = SparkOperationsHC.getDataSparked(itemListHC);
             // args 3 is sc tablename args 4 is hctablename
-            JavaRDD<Tuple2<String, Double>> unionSC = sparkContext.parallelize(list);
-            JavaRDD<Tuple2<String, Double>> unionHC = sparkContext.parallelize(listHC);
+            JavaPairRDD<String, Double> unionSC = sparkContext.parallelizePairs(list);
+            JavaPairRDD<String, Double> unionHC = sparkContext.parallelizePairs(listHC);
 
-            JavaPairRDD<String, Double> union = unionSC.join(unionHC);
-            System.out.println(union.take(5));
-            // SQLIo.insertSQL(listItems, args[3]);
-            // SQLIo.insertAverages(list, args[3]);
-            // SQLIo.insertSQL(listItemsHC, args[4]);
-            // SQLIo.insertAverages(listHC, args[4]);
+            JavaPairRDD<String, Tuple2<Double, Double>> union = unionSC.join(unionHC);
+            List<Tuple2<String, Tuple2<Double, Double>>> unionList = union.collect();
+            // System.out.println(union.take(5));
+            SQLIo.insertSQL(listItems, args[3]);
+            SQLIo.insertAverages(list, args[3]);
+            SQLIo.insertSQL(listItemsHC, args[4]);
+            SQLIo.insertAverages(listHC, args[4]);
+            SQLIo.insertDiff(unionList);
             sparkContext.close();
             // execTomcat();
 
-        } else {
-            System.out.println("not loaded" + args[0]);
-            // execTomcat();
+        } else if (args[0].equals("server")) {
+            System.out.println("not loaded");
+            execTomcat();
         }
 
     }
