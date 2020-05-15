@@ -1,2 +1,3 @@
-/target
-/.idea
+target
+src/resources/TestData.csv
+resources/TestData.csv
