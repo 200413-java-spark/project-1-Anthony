@@ -1,5 +1,7 @@
 ./target
-src/resources/TestData.csv
+src/main/resources/TestData.csv
 resources/TestData.csv
+resources
 target
+src/main/resources
 .vscode
