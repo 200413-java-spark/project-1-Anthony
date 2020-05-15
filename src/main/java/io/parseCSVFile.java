@@ -8,8 +8,11 @@ import org.apache.spark.api.java.JavaSparkContext;
 import items.UniqueItem;
 
 public class parseCSVFile {
-  public JavaRDD<UniqueItem> createItemRDD(JavaSparkContext sparkContext) {
-    JavaRDD<String> rows = sparkContext.textFile("src/main/resources/TestData.csv").cache();
+  private String textFile;
+
+  public JavaRDD<UniqueItem> createItemRDD(JavaSparkContext sparkContext, String textFile) {
+    this.textFile = textFile;
+    JavaRDD<String> rows = sparkContext.textFile(textFile).cache();
     // Function<String, Boolean> filter = k -> (k.matches("Unique+"));
     JavaRDD<String> itemRowsOnly = rows.filter(r -> {
       return r.matches(".*Unique.*");
