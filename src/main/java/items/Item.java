@@ -1,15 +1,20 @@
 package items;
 
-import java.sql.Date;
+import java.io.Serializable;
+import java.util.Date;
 
-public class Item {
+public class Item implements Serializable {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
     public String league;
-    public Date date;
+    public String date;
     public int itemID;
     public String name;
     public double value;
 
-    public Item(String league, Date date, int itemID, String name, double value) {
+    public Item(String league, String date, int itemID, String name, double value) {
         this.league = league;
         this.date = date;
         this.itemID = itemID;
