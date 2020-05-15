@@ -32,7 +32,7 @@ public class Server {
 
         // System.out.println(itemRowsOnly.collect());
         for (String line : itemRowsOnly.collect()) {
-            System.out.println(line);
+            System.out.println(line + "3");
         }
         sparkContext.close();
         // execTomcat();
