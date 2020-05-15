@@ -103,17 +103,18 @@ public class SQLIo {
 
       statement.execute("DROP TABLE IF EXISTS " + tableName + " CASCADE");
       statement.execute("CREATE TABLE " + tableName
-          + " (id serial primary key, name varchar, scPrice decimal, hcPrice decimal, diff decimal, percentDiff decimal)");
-      PreparedStatement rawDStatement = conn.prepareStatement(
-          "INSERT INTO " + tableName + " (name, scPrice, hcPrice, diff, percentDiff) VALUES(?,?,?,?,?)");
+          + " (id serial primary key, name varchar, scPrice decimal, hcPrice decimal, diff decimal, percentDiffSC decimal, percentDiffHC decimal)");
+      PreparedStatement rawDStatement = conn.prepareStatement("INSERT INTO " + tableName
+          + " (name, scPrice, hcPrice, diff, percentDiffSC, percentDiffHC) VALUES(?,?,?,?,?,?)");
       for (int i = 0; i < items.size(); i++) {
         // Date newDate = Date.valueOf(items.get(i).getDate());
         rawDStatement.setString(1, items.get(i)._1);
         rawDStatement.setDouble(2, items.get(i)._2._1);
         rawDStatement.setDouble(3, items.get(i)._2._2);
-        rawDStatement.setDouble(4, Math.abs(items.get(i)._2._2 - items.get(i)._2._1));
-        rawDStatement.setDouble(5,
-            Math.abs((items.get(i)._2._2 - items.get(i)._2._1)) / (Math.max(items.get(i)._2._2, items.get(i)._2._1)));
+        rawDStatement.setDouble(4, items.get(i)._2._2 - items.get(i)._2._1);
+        rawDStatement.setDouble(5, Math.abs((items.get(i)._2._2 - items.get(i)._2._1)) / (items.get(i)._2._1));
+        rawDStatement.setDouble(6, Math.abs((items.get(i)._2._2 - items.get(i)._2._1)) / (items.get(i)._2._2));
+
         rawDStatement.addBatch();
       }
       try {
@@ -135,7 +136,7 @@ public class SQLIo {
 
   public static ArrayList<String> readSQL(String table, String direction) throws SQLException {
     ArrayList<String> output = new ArrayList<String>();
-    String query = "select * from " + table + " order by value " + direction + " limit 40";
+    String query = "select * from " + table + " order by value " + direction;
     try (Connection conn = SQLSource.getConnection();
 
     ) {
@@ -151,7 +152,7 @@ public class SQLIo {
 
   public static ArrayList<String> readSQL(String table, String col, Boolean diff) throws SQLException {
     ArrayList<String> output = new ArrayList<String>();
-    String query = "select * from " + table + " order by " + col + " desc limit 40";
+    String query = "select * from " + table + " order by " + col + " desc";
     try (Connection conn = SQLSource.getConnection();
 
     ) {
@@ -162,7 +163,28 @@ public class SQLIo {
             " | " + resultStatement.getString("name") + " | " + Double.toString(resultStatement.getDouble("scPrice"))
                 + " | " + Double.toString(resultStatement.getDouble("hcPrice")) + " | "
                 + Double.toString(resultStatement.getDouble("diff")) + " | "
-                + Double.toString(resultStatement.getDouble("percentDiff")) + " | ");
+                + Double.toString(resultStatement.getDouble("percentDiffSC")) + " | "
+                + Double.toString(resultStatement.getDouble("percentDiffHC")) + " | ");
+      }
+    }
+    return output;
+  }
+
+  public static ArrayList<String> readSQL(String name) throws SQLException {
+    ArrayList<String> output = new ArrayList<String>();
+    String query = "select * from " + "sparkTableDiff where name='" + name + "'";
+    try (Connection conn = SQLSource.getConnection();
+
+    ) {
+      Statement statement = conn.createStatement();
+      ResultSet resultStatement = statement.executeQuery(query);
+      while (resultStatement.next()) {
+        output.add(
+            " | " + resultStatement.getString("name") + " | " + Double.toString(resultStatement.getDouble("scPrice"))
+                + " | " + Double.toString(resultStatement.getDouble("hcPrice")) + " | "
+                + Double.toString(resultStatement.getDouble("diff")) + " | "
+                + Double.toString(resultStatement.getDouble("percentDiffSC")) + " | "
+                + Double.toString(resultStatement.getDouble("percentDiffHC")) + " | ");
       }
     }
     return output;

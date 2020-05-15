@@ -62,7 +62,7 @@ public class Server {
             SQLIo.insertAverages(listHC, args[4]);
             SQLIo.insertDiff(unionList);
             sparkContext.close();
-            // execTomcat();
+            execTomcat();
 
         } else if (args[0].equals("server")) {
             System.out.println("not loaded");
